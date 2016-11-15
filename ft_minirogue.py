@@ -83,7 +83,7 @@ class 	Rogue(object):
 	def __init__(self):
 		self.char = '#'
 		self.prev = ' '
-		self.lives = 9
+		self.lives = 3
 		self.wallet = 0
 		self.pos = [3, 5]
 		self.monstr = Monstr()
@@ -101,10 +101,13 @@ class 	Rogue(object):
 	def check_wallet(self):
 		if self.pos[1] == self.obj.pos[1] and self.pos[0] == self.obj.pos[0]:
 			self.wallet += 10
+			self.obj.pos[1] = 0
 		if self.pos[1] == self.obj1.pos[1] and self.pos[0] == self.obj1.pos[0]:
 			self.wallet += 10
+			self.obj1.pos[1] = 0
 		if self.pos[1] == self.obj2.pos[1] and self.pos[0] == self.obj2.pos[0]:
 			self.wallet += 10
+			self.obj2.pos[1] = 0
 
 	def check_monstr(self):
 		if self.pos[1] == self.monstr.pos[1] and self.pos[0] == self.monstr.pos[0]:
