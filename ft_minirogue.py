@@ -4,8 +4,6 @@ curses.noecho()
 #curses.cbreak()
 screen.keypad(1)
 
-game = 1
-
 		#y    x
 NONE  = ( 0,  0)
 UP    = (-1,  0)
@@ -108,6 +106,12 @@ class 	Rogue(object):
 		if self.pos[1] == self.obj2.pos[1] and self.pos[0] == self.obj2.pos[0]:
 			self.wallet += 10
 
+	def check_monstr(self):
+		if self.pos[1] == self.monstr.pos[1] and self.pos[0] == self.monstr.pos[0]:
+			self.lives -= 1
+		if self.lives == 0:
+			game = 0
+
 	def update_pos(self, direction):
 		screen.addstr(self.pos[0], self.pos[1], '.')
 		y = self.pos[0] + direction[0] 
@@ -116,6 +120,7 @@ class 	Rogue(object):
 			self.pos[0] += direction[0]
 			self.pos[1] += direction[1]
 		self.check_wallet()
+		self.check_monstr()
 		self._draw()
 
 	def _draw(self):
@@ -126,11 +131,15 @@ class 	Rogue(object):
 		screen.addstr(1, 1, 'Wallet ' + str(self.wallet))
 		screen.move(0, 0)
 
+def game_over():
+	win = screen.getmaxyx()
+	screen.addstr(win[0]/2, win[1]/2, GAME_OVER)
 
 def main():
 	rogue = Rogue()
 	rogue.update_map()
 	rogue.update_pos(NONE)
+	rogue.monstr.update_pos(NONE)
 	rogue.obj.update_pos(NONE)
 	rogue.obj1.update_pos(NONE)
 	rogue.obj2.update_pos(NONE)
@@ -138,7 +147,7 @@ def main():
 		c = screen.getch()
 		if c == ord('q'):
 			break  # Exit the while()
-		elif game == True:
+		elif rogue.lives:
 			if c == curses.KEY_UP:
 				rogue.update_pos(UP)
 			elif c == curses.KEY_DOWN:
@@ -148,6 +157,8 @@ def main():
 			elif c == curses.KEY_RIGHT:
 				rogue.update_pos(RIGHT)
 			rogue.monstr.update_pos(NONE)
+		elif rogue.lives == 0:
+			game_over()
 
 main()
 
